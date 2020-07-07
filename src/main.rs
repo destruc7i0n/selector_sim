@@ -1,3 +1,5 @@
+use structopt::StructOpt;
+
 mod world;
 mod scoreboard;
 mod selector;
@@ -5,14 +7,22 @@ mod selector;
 use crate::world::{World};
 use crate::selector::{Selector};
 
-fn main() {
-  let args: Vec<String> = std::env::args().collect();
+#[derive(Debug, StructOpt)]
+struct Cli {
+  #[structopt(help = "The name of the world folder")]
+  world: String,
+  #[structopt(help = "The entity selector")]
+  selector: String,
+}
 
-  let world = World::new(args.get(1).unwrap());
+fn main() {
+  let args = Cli::from_args();
+
+  let world = World::new(&args.world);
 
   let World { scoreboard, entities, .. } = &world;
 
-  let selector = Selector::new(args.get(2).unwrap());
+  let selector = Selector::new(&args.selector);
 
   println!("parsed selector: {:?}", selector); 
 

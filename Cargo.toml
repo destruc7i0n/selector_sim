@@ -1,5 +1,5 @@
 [package]
-name = "mc_world"
+name = "selector_sim"
 version = "0.1.0"
 authors = ["destruc7i0n <destruc7i0n@users.noreply.github.com>"]
 edition = "2018"
@@ -14,3 +14,4 @@ libflate = "1"
 libc = "0.2.4"
 regex = "1"
 app_dirs = "^1.2.1"
+structopt = "0.2"
