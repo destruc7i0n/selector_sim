@@ -1,0 +1,41 @@
+on:
+  - push
+
+name: CI
+
+jobs:
+  build-windows-64bit:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: x86_64-pc-windows-msvc
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release
+      - uses: actions/upload-artifact@v1
+        with:
+          name: build-win64
+          path: target/release/ludusavi.exe
+
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: x86_64-apple-darwin
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release
+      - uses: actions/upload-artifact@v1
+        with:
+          name: ludusavi-mac
+          path: target/release/ludusavi
