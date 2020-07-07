@@ -41,7 +41,9 @@ impl Selector {
           "type" => sel.entity_type = parts[1].to_string(),
           "name" => sel.name = parts[1].to_string(),
           "tag" => sel.tags.push(parts[1].to_string()),
-          _ => {}
+          _ => {
+            println!("Unknown key \"{}\" found - ignoring.", parts[0]);
+          }
         };
       }
     } else {
