@@ -74,15 +74,15 @@ impl Selector {
       if !correct_name { return false; }
     }
   
-    if self.tags.len() > 0 {
+    if let Some(entity_tags) = &entity.tags {
       let mut is_valid = true;
   
       for tag in self.tags.iter() {
         if tag.starts_with("!") {
           let tag_name = &tag[1..].to_string();
-          is_valid = is_valid && !entity.tags.contains(tag_name);
+          is_valid = is_valid && !entity_tags.contains(tag_name);
         } else {
-          is_valid = is_valid && entity.tags.contains(tag);
+          is_valid = is_valid && entity_tags.contains(tag);
         }
       }
   

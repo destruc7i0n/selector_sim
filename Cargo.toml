@@ -10,7 +10,6 @@ edition = "2018"
 rusty-leveldb =  { path = "../leveldb-rs" }
 hematite-nbt = { git = "https://github.com/ocecaco/hematite_nbt-1", branch = "little-endian" }
 serde = { version = "1.0", features = ["derive"] }
-libflate = "1"
 libc = "0.2.4"
 regex = "1"
 app_dirs = "^1.2.1"

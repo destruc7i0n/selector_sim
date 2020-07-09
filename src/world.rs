@@ -16,7 +16,7 @@ pub struct Entity {
   #[serde(rename = "UniqueID")] pub id: i64,
   #[serde(rename = "identifier")] pub entity_type: String,
   #[serde(rename = "Pos")] pub pos: Vec<f32>,
-  #[serde(rename = "Tags")] pub tags: Vec<String>, 
+  #[serde(rename = "Tags")] pub tags: Option<Vec<String>>,
   #[serde(rename = "definitions")] pub definitions: Vec<String>
 }
 
@@ -43,6 +43,7 @@ impl World {
 
   fn get_db (world_name: &str) -> DB {
     let mut opt = rusty_leveldb::Options::default();
+    opt.write_buffer_size = 4 * 1024 * 1024;
     opt.compression_type = rusty_leveldb::CompressionType::CompressionZlibRaw;
 
     let dir = World::get_world_dir(world_name);
@@ -103,15 +104,18 @@ impl World {
   }
   
   fn get_scoreboard (db: &mut rusty_leveldb::DB, entities: &EntityMap) -> Scoreboard {
-    let mut scoreboard = db.get(b"scoreboard").unwrap();
-    let mut scoreboard_cursor = std::io::Cursor::new(&mut scoreboard);
-  
-    let raw_scoreboard: RawScoreboard = de::from_reader(&mut scoreboard_cursor, Endianness::LittleEndian).unwrap();
-  
     let mut board = Scoreboard {
       scoreboard_id_to_id: HashMap::new(),
       entity_id_to_scores: HashMap::new(),
     };
+
+    let mut scoreboard = match db.get(b"scoreboard") {
+      Some(data) => data,
+      _ => return board
+    };
+    let mut scoreboard_cursor = std::io::Cursor::new(&mut scoreboard);
+  
+    let raw_scoreboard: RawScoreboard = de::from_reader(&mut scoreboard_cursor, Endianness::LittleEndian).unwrap();
   
     for entry in raw_scoreboard.entries {
       if entry.identity_type == 2 {
